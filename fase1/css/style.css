@@ -1,0 +1,84 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    display: block;
+    text-decoration: none;
+}
+
+img {
+    border: 0;
+    display: inline-block;
+}
+
+figure {
+    margin: 0;
+}
+
+.wrapper {
+    width: 100%;
+}
+
+/**** Carousel styling ****/
+.carousel-container {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.carousel-inner {
+    width: 100%;
+    position: relative;
+}
+
+.carousel-inner ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.carousel-item {
+    display: none;
+}
+
+.is-active {
+    display: block;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+/**** Carousel control buttons ****/
+.prev-Btn,
+.next-Btn {
+    position: absolute;
+    width: 50px;
+    height: 63px;
+    top: 50%;
+    margin-top: -31.5px;
+}
+
+.prev-Btn {
+    left: 0;
+    background: url(../img/previous-btn.png) no-repeat;
+}
+
+.next-Btn {
+    right: 0;
+    background: url(../img/next-btn.png) no-repeat;
+}
+
+.hidden {
+    display: none;
+}

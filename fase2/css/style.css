@@ -1,0 +1,195 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    display: block;
+    text-decoration: none;
+}
+
+img {
+    border: 0;
+    display: inline-block;
+}
+
+figure {
+    margin: 0;
+}
+
+.wrapper {
+    width: 100%;
+}
+
+/**** Carousel styling ****/
+.carousel-container {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.carousel-inner {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+}
+
+.carousel-inner ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.carousel-item {
+    /*Toggle on/off to work without animation*/
+    /*display: none;*/
+
+    /*Toggle on off to work with animation*/
+    position: absolute;
+    display: inline-block;
+    top: 0;
+}
+
+.carousel-item.moveOutLeft,
+.carousel-item.moveOutRight {
+    z-index: 5;
+}
+
+.is-active {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+}
+
+/**** Carousel control buttons ****/
+.prev-Btn,
+.next-Btn {
+    position: absolute;
+    width: 50px;
+    height: 63px;
+    top: 50%;
+    margin-top: -31.5px;
+    z-index: 9999;
+}
+
+.prev-Btn {
+    left: 0;
+    background: url(../img/previous-btn.png) no-repeat;
+}
+
+.next-Btn {
+    right: 0;
+    background: url(../img/next-btn.png) no-repeat;
+}
+
+/**** Animation classes ****/
+
+.moveOutRight {
+    -webkit-animation: moveOutRight .7s linear;
+    animation: moveOutRight .7s linear;
+}
+
+.moveInRight {
+    -webkit-animation: moveInRight .7s linear;
+    animation: moveInRight .7s linear;
+}
+
+.moveInLeft {
+    -webkit-animation: moveInLeft .7s linear;
+    animation: moveInLeft .7s linear;
+}
+
+.moveOutLeft {
+    -webkit-animation: moveOutLeft .7s linear;
+    animation: moveOutLeft .7s linear;
+}
+
+/*******Slide out left animation*******/
+@-webkit-keyframes moveOutLeft {
+    0% {
+        left: 0
+    }
+    100% {
+        left: -100%;
+    }
+}
+
+@keyframes moveOutLeft {
+    0% {
+        left: 0;
+        /*transform: translate(0);*/
+    }
+    100% {
+        left: -100%;
+        /*transform: translate(-100%);*/
+    }
+}
+
+/*******Slide in left animation*******/
+@-webkit-keyframes moveInLeft {
+    0% {
+        left: 100%;
+    }
+    100% {
+        left: 0
+    }
+}
+
+@keyframes moveInLeft {
+    0% {
+        left: 100%;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+/*******Slide out right animation*******/
+@-webkit-keyframes moveOutRight {
+    0% {
+        left: 0;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes moveOutRight {
+    0% {
+        left: 0;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/*******Slide in right animation*******/
+@-webkit-keyframes moveInRight {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 0;
+    }
+}
+
+@keyframes moveInRight {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 0;
+    }
+}
