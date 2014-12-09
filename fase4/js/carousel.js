@@ -11,19 +11,24 @@ function init() {
  * Carousel constructor
  */
 function Carousel() {
-    this.prevBtn = document.querySelector('.prev-Btn');
-    this.nextBtn = document.querySelector('.next-Btn');
+    this.wrapper = document.querySelector('.carousel-container');
+    this.prevBtn = document.querySelector('.prev-btn');
+    this.nextBtn = document.querySelector('.next-btn');
+    this.playBtn = document.querySelector('.play-btn');
     this.notShuffledcarouselItems = document.querySelectorAll('.carousel-item');
     this.totalAmountOfCarouselItems = this.notShuffledcarouselItems.length;
-    this.carouselItems = new Array();
     this.currentIndex = this.generateRandomNumber();
-    this.oldIndex;
+    this.carouselItems = new Array();
     this.isAnimating = false;
+    this.oldIndex;
+
 
     //Object to store default settings for the carousel
     this.CAROUSEL_SETTINGS = {
         amountOfItemsToSlide: 1,
-        speed: 5000
+        animationSpeed: 400,
+        intervalSpeed: 4000,
+        intervalTimer: 0
     };
 
     //Initialize the Carousel
@@ -44,7 +49,6 @@ Carousel.prototype = {
 
         //Add is-active class to the first carousel item
         this.carouselItems[this.currentIndex].classList.add('is-active');
-        //console.info("The current index from the constructor: " + this.currentIndex);
     },
 
     createArrayWithShuffledCarouselItems: function () {
@@ -62,7 +66,6 @@ Carousel.prototype = {
         do {
             newRandomNumber = this.generateRandomNumber();
         }
-            //While the new Number hasn't been used yet
         while (randomNumbersArray[newRandomNumber]);
         randomNumbersArray[newRandomNumber] = true;
         this.carouselItems[newRandomNumber] = this.notShuffledcarouselItems[index];
@@ -73,19 +76,109 @@ Carousel.prototype = {
     },
 
     assignEventHandlers: function () {
-        this.goToItem = this.goToItem.bind(this);
-        this.prevBtn.addEventListener('click', this.goToItem);
-        this.nextBtn.addEventListener('click', this.goToItem);
+        //Left and right button navigation
+        this.prevBtn.addEventListener('click', function (e) {
+            //Prevent default only for click event.
+            if (e.type !== "keydown") {
+                e.preventDefault();
+            }
+            this.goToItem('left')
+        }.bind(this));
+
+        this.nextBtn.addEventListener('click', function (e) {
+            //Prevent default only for click event.
+            if (e.type !== "keydown") {
+                e.preventDefault();
+            }
+            this.goToItem('right')
+        }.bind(this));
+
+        //Keyboard navigation
+        this.handleKeyboardNavigation = this.handleKeyboardNavigation.bind(this);
+        window.addEventListener('keydown', this.handleKeyboardNavigation);
+
+        //Autoplay click/toggle navigation
+        this.playBtn.addEventListener('click', function (e) {
+            //Prevent default only for click event.
+            if (e.type !== "keydown") {
+                e.preventDefault();
+            }
+            this.toggleAutoplay();
+        }.bind(this));
     },
 
-    goToItem: function (e) {
-        e.preventDefault();
+    autoplayDataAttributeStatus: function (action) {
+        switch (action) {
+            case 'toggle':
+                var autoplayDataAttributeStatus = this.wrapper.getAttribute('data-autoplay-status');
+                this.wrapper.setAttribute('data-autoplay-status', autoplayDataAttributeStatus === 'true' ? 'false' : 'true');
+                console.log('Data autoplay status: ' + this.wrapper.getAttribute('data-autoplay-status'));
+                break;
+
+            case 'start':
+                this.wrapper.setAttribute('data-autoplay-status', 'true');
+                console.log('Data autoplay status: ' + this.wrapper.getAttribute('data-autoplay-status'));
+                break;
+
+            case 'stop':
+                this.wrapper.setAttribute('data-autoplay-status', 'false');
+                console.log('Data autoplay status: ' + this.wrapper.getAttribute('data-autoplay-status'));
+                break;
+        }
+    },
+
+    handleKeyboardNavigation: function (e) {
+        console.log(e);
+        switch (e.keyCode) {
+            case 38:
+                this.startAutoPlay();
+                break;
+
+            case 40:
+                this.stopAutoPlay();
+                break;
+
+            case 37:
+                this.goToItem('left');
+                break;
+
+            case 39:
+                this.goToItem('right');
+                break;
+
+            default:
+                //DO nothing
+                break;
+        }
+    },
+
+    startAutoPlay: function () {
+        var self = this;
+        this.autoplayDataAttributeStatus('start');
+        this.CAROUSEL_SETTINGS.intervalTimer = setInterval(function () {
+            self.goToItem('right');
+        }, self.CAROUSEL_SETTINGS.intervalSpeed);
+    },
+
+    stopAutoPlay: function () {
+        var self = this;
+        this.autoplayDataAttributeStatus('stop');
+        clearInterval(self.CAROUSEL_SETTINGS.intervalTimer);
+    },
+
+    toggleAutoplay: function () {
+        this.autoplayDataAttributeStatus('toggle');
+        var autoplayDataAttributeStatus = this.wrapper.getAttribute('data-autoplay-status');
+        autoplayDataAttributeStatus === 'true' ? this.startAutoPlay() : this.stopAutoPlay();
+    },
+
+    goToItem: function (direction) {
         if (this.isAnimating) {
             console.warn('Sorry, animation not possible at the moment. Carousel is still animating.');
             return;
         }
 
-        if (e.target.classList.contains('prev-Btn')) {
+        if (direction === 'left') {
             if (this.hasNoCarouselItem("left")) {
                 this.updateIndex("resetToEnd");
                 console.log('Index reset to end');
@@ -95,7 +188,7 @@ Carousel.prototype = {
             this.move("left");
             this.isAnimating = true;
 
-        } else if (e.target.classList.contains('next-Btn')) {
+        } else if (direction === 'right') {
             if (this.hasNoCarouselItem("right")) {
                 this.updateIndex("resetToBeginning");
                 console.log('Index reset to beginning');
@@ -178,16 +271,12 @@ Carousel.prototype = {
     animate: function (direction) {
         switch (direction) {
             case "left":
-                //console.log("Old item sliding out left");
                 this.carouselItems[this.oldIndex].classList.add('moveOutLeft');
-                //console.log("Current index sliding in left");
                 this.carouselItems[this.currentIndex].classList.add('moveInLeft');
                 break;
 
             case "right":
-                //console.log("Old index sliding out right");
                 this.carouselItems[this.oldIndex].classList.add('moveOutRight');
-                //console.log("Current item sliding in right");
                 this.carouselItems[this.currentIndex].classList.add('moveInRight');
                 break;
         }
@@ -198,25 +287,17 @@ Carousel.prototype = {
         setTimeout(function () {
             if (self.carouselItems[self.oldIndex].classList.contains('moveOutLeft') || self.carouselItems[self.currentIndex].classList.contains('moveInLeft')) {
                 self.carouselItems[self.oldIndex].classList.remove('moveOutLeft');
-                //console.log('Removed the class moveOutLeft');
-
                 self.carouselItems[self.currentIndex].classList.remove('moveInLeft');
-                //console.log('Removed the class moveInLeft');
-
                 self.isAnimating = false;
 
             } else if (self.carouselItems[self.oldIndex].classList.contains('moveOutRight') || self.carouselItems[self.currentIndex].classList.contains('moveInRight')) {
                 self.carouselItems[self.oldIndex].classList.remove('moveOutRight');
-                //console.log('Removed the class moveOutRight');
-
                 self.carouselItems[self.currentIndex].classList.remove('moveInRight');
-                //console.log('Removed the class moveInRight');
-
                 self.isAnimating = false;
 
             } else {
                 console.warn('No classes have been removed');
             }
-        }, this.CAROUSEL_SETTINGS.speed);
+        }, this.CAROUSEL_SETTINGS.animationSpeed);
     }
 };

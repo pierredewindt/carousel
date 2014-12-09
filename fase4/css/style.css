@@ -86,9 +86,16 @@ figure {
 }
 
 /**** Carousel control buttons ****/
-.prev-Btn,
-.next-Btn {
+.prev-btn,
+.next-btn,
+.play-btn {
     position: absolute;
+    text-indent: -9999px;
+    transition: opacity .3s linear;
+}
+
+.prev-btn,
+.next-btn {
     width: 50px;
     height: 63px;
     top: 50%;
@@ -96,35 +103,58 @@ figure {
     z-index: 9999;
 }
 
-.prev-Btn {
+.prev-btn {
     left: 0;
     background: url(../img/previous-btn.png) no-repeat;
 }
 
-.next-Btn {
+.next-btn {
     right: 0;
     background: url(../img/next-btn.png) no-repeat;
 }
 
+.play-btn {
+    width: 63px;
+    height: 50px;
+    left: 50%;
+    margin-left: -31.5px;
+    bottom: 0;
+    transition: background .3s linear;
+}
+
+[data-autoplay-status="true"] .play-btn {
+    background: url(../img/stop-btn.png) no-repeat;
+}
+
+[data-autoplay-status="false"] .play-btn {
+    background: url(../img/play-btn.png) no-repeat;
+}
+
+.prev-btn:hover,
+.next-btn:hover,
+.play-btn:hover {
+    opacity: .7;
+}
+
 /**** Animation classes ****/
 .moveOutRight {
-    -webkit-animation: moveOutRight 5s linear;
-    animation: moveOutRight 5s linear;
+    -webkit-animation: moveOutRight .4s linear;
+    animation: moveOutRight .4s linear;
 }
 
 .moveInRight {
-    -webkit-animation: moveInRight 5s linear;
-    animation: moveInRight 5s linear;
+    -webkit-animation: moveInRight .4s linear;
+    animation: moveInRight .4s linear;
 }
 
 .moveInLeft {
-    -webkit-animation: moveInLeft 5s linear;
-    animation: moveInLeft 5s linear;
+    -webkit-animation: moveInLeft .4s linear;
+    animation: moveInLeft .4s linear;
 }
 
 .moveOutLeft {
-    -webkit-animation: moveOutLeft 5s linear;
-    animation: moveOutLeft 5s linear;
+    -webkit-animation: moveOutLeft .4s linear;
+    animation: moveOutLeft .4s linear;
 }
 
 /*******Slide out left animation*******/
