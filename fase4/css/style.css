@@ -70,8 +70,8 @@ figure {
 }
 
 .carousel-item {
-    top: -100%;
-    left: -100%;
+    top: -1000%;
+    left: -1000%;
 }
 
 .is-active {

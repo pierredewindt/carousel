@@ -107,7 +107,7 @@ Carousel.prototype = {
         }.bind(this));
     },
 
-    autoplayDataAttributeStatus: function (action) {
+    autoplayStatus: function (action) {
         switch (action) {
             case 'toggle':
                 var autoplayDataAttributeStatus = this.wrapper.getAttribute('data-autoplay-status');
@@ -154,7 +154,7 @@ Carousel.prototype = {
 
     startAutoPlay: function () {
         var self = this;
-        this.autoplayDataAttributeStatus('start');
+        this.autoplayStatus('start');
         this.CAROUSEL_SETTINGS.intervalTimer = setInterval(function () {
             self.goToItem('right');
         }, self.CAROUSEL_SETTINGS.intervalSpeed);
@@ -162,12 +162,12 @@ Carousel.prototype = {
 
     stopAutoPlay: function () {
         var self = this;
-        this.autoplayDataAttributeStatus('stop');
+        this.autoplayStatus('stop');
         clearInterval(self.CAROUSEL_SETTINGS.intervalTimer);
     },
 
     toggleAutoplay: function () {
-        this.autoplayDataAttributeStatus('toggle');
+        this.autoplayStatus('toggle');
         var autoplayDataAttributeStatus = this.wrapper.getAttribute('data-autoplay-status');
         autoplayDataAttributeStatus === 'true' ? this.startAutoPlay() : this.stopAutoPlay();
     },
