@@ -1,0 +1,8 @@
+Changelog fase 5:
+
+Refactoring:
+- Changes New Array() changed to [].
+- Added comment to handleKeyboardNavigation, resetAutoplayTimer & toggleAutoplay functions.
+- Refactored startAutoPlay, stopAutoPlay & toggleAutoplay functions.
+- Removed autoplayStatus function.
+- 

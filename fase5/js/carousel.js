@@ -17,11 +17,11 @@ function Carousel() {
     this.playBtn = document.querySelector('.play-btn');
     this.notShuffledcarouselItems = document.querySelectorAll('.carousel-item');
     this.totalAmountOfCarouselItems = this.notShuffledcarouselItems.length;
+    this.carouselIndicators = document.querySelectorAll('.carousel-indicators li');
     this.currentIndex = this.generateRandomNumber();
-    this.carouselItems = new Array();
+    this.carouselItems = [];
     this.isAnimating = false;
     this.oldIndex;
-
 
     //Object to store default settings for the carousel
     this.CAROUSEL_SETTINGS = {
@@ -49,6 +49,9 @@ Carousel.prototype = {
 
         //Add is-active class to the first carousel item
         this.carouselItems[this.currentIndex].classList.add('is-active');
+
+        /*TEST*/
+        this.carouselIndicators[this.currentIndex].classList.add('is-active');
     },
 
     createArrayWithShuffledCarouselItems: function () {
@@ -86,13 +89,14 @@ Carousel.prototype = {
 
             //Check if autoplay is on. If autoplay is on, reset timer.
             if (this.wrapper.getAttribute('data-autoplay-status') === 'true') {
-                console.log(this.CAROUSEL_SETTINGS.intervalTimer);
                 this.resetAutoplayTimer();
             }
         }.bind(this));
 
         this.nextBtn.addEventListener('click', function (e) {
             //Prevent default only for click event.
+
+            /*Hoe it het weer met prevent default voor keydown???*/
             if (e.type !== "keydown") {
                 e.preventDefault();
             }
@@ -100,7 +104,6 @@ Carousel.prototype = {
 
             //Check if autoplay is on. If autoplay is on, reset timer.
             if (this.wrapper.getAttribute('data-autoplay-status') === 'true') {
-                console.log(this.CAROUSEL_SETTINGS.intervalTimer);
                 this.resetAutoplayTimer();
             }
         }.bind(this));
@@ -142,19 +145,19 @@ Carousel.prototype = {
     handleKeyboardNavigation: function (e) {
         console.log(e);
         switch (e.keyCode) {
-            case 38:
+            case 38: //Up arrow key
                 this.startAutoPlay();
                 break;
 
-            case 40:
+            case 40: //Down arrow key
                 this.stopAutoPlay();
                 break;
 
-            case 37:
+            case 37: //Left arrow key
                 this.goToItem('left');
                 break;
 
-            case 39:
+            case 39: //Right arrow key
                 this.goToItem('right');
                 break;
 
@@ -166,7 +169,8 @@ Carousel.prototype = {
 
     startAutoPlay: function () {
         var self = this;
-        this.autoplayStatus('start');
+        //this.autoplayStatus('start');
+        this.wrapper.setAttribute('data-autoplay-status', 'true');
         this.CAROUSEL_SETTINGS.intervalTimer = setInterval(function () {
             self.goToItem('right');
         }, self.CAROUSEL_SETTINGS.intervalSpeed);
@@ -174,19 +178,29 @@ Carousel.prototype = {
 
     stopAutoPlay: function () {
         var self = this;
-        this.autoplayStatus('stop');
+        //this.autoplayStatus('stop');
+        this.wrapper.setAttribute('data-autoplay-status', 'false');
         window.clearInterval(self.CAROUSEL_SETTINGS.intervalTimer);
     },
 
     toggleAutoplay: function () {
-        this.autoplayStatus('toggle');
+        //Get the autoplay status
         var autoplayDataAttributeStatus = this.wrapper.getAttribute('data-autoplay-status');
-        autoplayDataAttributeStatus === 'true' ? this.startAutoPlay() : this.stopAutoPlay();
+
+        //If autoplay status is true, set autoplay status to false
+        if (autoplayDataAttributeStatus === 'true') {
+            this.wrapper.setAttribute('data-autoplay-status', 'false');
+            this.stopAutoPlay();
+
+            //If autoplay status is set to false, set autoplay status to true
+        } else {
+            this.wrapper.setAttribute('data-autoplay-status', 'true');
+            this.startAutoPlay()
+        }
     },
 
     resetAutoplayTimer: function () {
-        //Reset autoplay timer.
-        //this.CAROUSEL_SETTINGS.intervalTimer = 0;
+        //Stop and reset the autoplay timer
         this.stopAutoPlay();
         this.startAutoPlay();
     },
@@ -244,6 +258,11 @@ Carousel.prototype = {
             case "left":
                 this.carouselItems[this.oldIndex].classList.remove('is-active');
                 this.carouselItems[this.currentIndex].classList.add('is-active');
+
+                /*TEST*/
+                this.carouselIndicators[this.oldIndex].classList.remove('is-active');
+                this.carouselIndicators[this.currentIndex].classList.add('is-active');
+
                 this.animate('left');
                 this.removeAnimationClasses();
                 this.isAnimating = false;
@@ -252,6 +271,12 @@ Carousel.prototype = {
             case "right":
                 this.carouselItems[this.oldIndex].classList.remove('is-active');
                 this.carouselItems[this.currentIndex].classList.add('is-active');
+
+                /*TEST*/
+                this.carouselIndicators[this.oldIndex].classList.remove('is-active');
+                this.carouselIndicators[this.currentIndex].classList.add('is-active');
+
+
                 this.animate('right');
                 this.removeAnimationClasses();
                 this.isAnimating = false;
