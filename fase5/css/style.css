@@ -99,15 +99,25 @@ figure {
 
 .carousel-indicators li {
     border-radius: 50%;
-    background: rgba(255, 255, 255, .5);
+    background: rgba(255, 255, 255, .6);
     display: inline-block;
     list-style: none;
     width: 10px;
     height: 10px;
+    margin-left: 5px;
+
+    -webkit-box-shadow: inset 0px 1px 1px 2px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: inset 0px 1px 1px 1px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0px 1px 1px 1px rgba(0, 0, 0, 0.4);
 }
 
 .carousel-indicators li.is-active {
-    background: rgba(255, 255, 255, 1);
+    background: rgba(240, 130, 130, .6);
+}
+
+.carousel-indicators a {
+    text-decoration: none;
+    text-indent: -9999px;
 }
 
 /**** Carousel control buttons ****/

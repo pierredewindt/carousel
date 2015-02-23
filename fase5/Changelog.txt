@@ -5,4 +5,6 @@ Refactoring:
 - Added comment to handleKeyboardNavigation, resetAutoplayTimer & toggleAutoplay functions.
 - Refactored startAutoPlay, stopAutoPlay & toggleAutoplay functions.
 - Removed autoplayStatus function.
-- 
+
+New features:
+- Added carousel indicators
