@@ -1,13 +1,13 @@
 window.onload = init;
 
-/*
+/**
  * Create and initialize the carousel
  */
 function init() {
     new Carousel();
 }
 
-/*
+/**
  * Carousel constructor
  */
 function Carousel() {
@@ -16,7 +16,7 @@ function Carousel() {
     this.nextBtn = document.querySelector('.next-btn');
     this.playBtn = document.querySelector('.play-btn');
     this.notShuffledCarouselItems = document.querySelectorAll('.carousel-item');
-    this.olCarouselItems = document.querySelector('.carousel-items');
+    this.carouselItemsList = document.querySelector('.carousel-items');
     this.totalAmountOfCarouselItems = this.notShuffledCarouselItems.length;
     this.carouselIndicators = document.getElementById('carousel-indicators');
     this.currentIndex = this.generateRandomNumber();
@@ -36,7 +36,7 @@ function Carousel() {
     this.init();
 };
 
-/*
+/**
  * Carousel prototype
  */
 Carousel.prototype = {
@@ -45,6 +45,9 @@ Carousel.prototype = {
         this.assignEventHandlers();
     },
 
+    /**
+     * Setup the carousel
+     */
     setupCarousel: function () {
         this.removeNotShuffledCarouselItemsFromDOM(); //Remove old un-shuffled items from the DOM
         this.createArrayWithShuffledCarouselItems();  //Create a new carousel items array with shuffled carousel items
@@ -52,23 +55,25 @@ Carousel.prototype = {
         this.carouselIndicators.children[this.currentIndex].classList.add('is-active'); //Add is-active class to the current carousel indicator
     },
 
-    /*
+    /**
      * Generates a random number.
+     *
+     * @returns {number}
      */
     generateRandomNumber: function () {
         return Math.floor(Math.random() * this.totalAmountOfCarouselItems);
     },
 
-    /*
+    /**
      * Removes all the li's from the carousel-items ol.
      */
     removeNotShuffledCarouselItemsFromDOM: function () {
-        while (this.olCarouselItems.firstChild) {
-            this.olCarouselItems.removeChild(this.olCarouselItems.firstChild);
+        while (this.carouselItemsList.firstChild) {
+            this.carouselItemsList.removeChild(this.carouselItemsList.firstChild);
         }
     },
 
-    /*
+    /**
      * Creates a new array with shuffled carousel items.
      */
     createArrayWithShuffledCarouselItems: function () {
@@ -81,11 +86,11 @@ Carousel.prototype = {
         }
     },
 
-    /*
+    /**
      * Shuffles the carousel items and adds them to a new array.
      *
-     * @param index from the for loop
-     * @param array to keep track of the used random numbers
+     * @param index (i) from the for loop
+     * @param randomNumbersArray to keep track of the used random numbers
      */
     shuffleCarouselItems: function (index, randomNumbersArray) {
         var newRandomNumber;
@@ -93,21 +98,21 @@ Carousel.prototype = {
         do {
             newRandomNumber = this.generateRandomNumber(); //Generate a unique random number
         }
-        while (randomNumbersArray[newRandomNumber]); //While the unique number is used
+        while (randomNumbersArray[newRandomNumber]); //While the unique number is not yet used
         randomNumbersArray[newRandomNumber] = true; //Flag the number when it's used so that it can't be used again
 
         this.shuffledCarouselItems[index] = this.notShuffledCarouselItems[newRandomNumber];
         this.shuffledCarouselItems[index].setAttribute('id', index);  //The id of each carousel item also have to be re-index so use index instead of a random number
 
         this.generateDynamicCarouselIndicators(index); //Generate the carousel indicators for each index
-        this.olCarouselItems.appendChild(this.shuffledCarouselItems[index]);  //Append shuffled items to ol
-        console.log('New list with ID: ' + index + ' added');
+        this.carouselItemsList.appendChild(this.shuffledCarouselItems[index]);  //Append shuffled items to ol
+        console.log('New list with ID: ' + index + ' added' + '.' + 'This index holds image number ' + newRandomNumber + '.');
     },
 
-    /*
+    /**
      * Generate dynamic carousel indicators.
      *
-     * @param random number that's unique
+     * @param randomNumber a unique random number
      */
     generateDynamicCarouselIndicators: function (randomNumber) {
         var listElement, anchor, listItemValue;
@@ -121,7 +126,7 @@ Carousel.prototype = {
         this.carouselIndicators.appendChild(listElement); //Append list element to ol
     },
 
-    /*
+    /**
      * Assign the event handlers.
      */
     assignEventHandlers: function () {
@@ -158,7 +163,7 @@ Carousel.prototype = {
         this.handleKeyboardNavigation = this.handleKeyboardNavigation.bind(this);
         window.addEventListener('keydown', this.handleKeyboardNavigation);
 
-        //Autoplay click/toggle navigation
+        //Autoplay click || toggle navigation
         this.playBtn.addEventListener('click', function (e) {
             //Prevent default only for click event.
             if (e.type !== "keydown") {
@@ -179,6 +184,11 @@ Carousel.prototype = {
         }.bind(this));
     },
 
+    /**
+     * Handle the keyboard events for the keyboard navigation.
+     *
+     * @param e keyboard event
+     */
     handleKeyboardNavigation: function (e) {
         console.log(e);
         switch (e.keyCode) {
@@ -204,16 +214,17 @@ Carousel.prototype = {
         }
     },
 
-    /*
+    /**
      * Get the index of the clicked li.
      *
-     * @param event to determine which li is clicked
+     * @param e the clicked li.
+     * @returns {number} index of the clicked li
      */
     getClickedListItemIndex: function (e) {
-        var clickedIndex = 0; //Initialize the clickedIndex
-        var listElement = e.target.parentNode; //Get the clicked li
+        var clickedIndex = 0;
+        var listElement = e.target.parentNode; //Get the clicked li because you're clicking on the a inside the li.
 
-        //
+        //while li has a previous sibling, increase index by 1.
         while (listElement.previousElementSibling) {
             listElement = listElement.previousElementSibling;
             clickedIndex += 1;
@@ -222,8 +233,8 @@ Carousel.prototype = {
         return clickedIndex;
     },
 
-    /*
-     * Start autoplay.
+    /**
+     * Start the autoplay function.
      */
     startAutoPlay: function () {
         var self = this;
@@ -233,7 +244,7 @@ Carousel.prototype = {
         }, self.CAROUSEL_SETTINGS.intervalSpeed);
     },
 
-    /*
+    /**
      * Stop autoplay.
      */
     stopAutoPlay: function () {
@@ -242,8 +253,9 @@ Carousel.prototype = {
         window.clearInterval(self.CAROUSEL_SETTINGS.intervalTimer); //Clear interval
     },
 
-    /*
+    /**
      * Toggle autoplay.
+     * data-autoplay-status: 'true' || false
      */
     toggleAutoplay: function () {
         var autoplayDataAttributeStatus = this.wrapper.getAttribute('data-autoplay-status'); //Get the autoplay data attribute value
@@ -260,18 +272,18 @@ Carousel.prototype = {
         }
     },
 
-    /*
-     * Reset autplay
+    /**
+     * Reset autoplay.
      */
     resetAutoplayTimer: function () {
         this.stopAutoPlay();
         this.startAutoPlay();
     },
 
-    /*
+    /**
      * Go to item with a specific index.
      *
-     * @param event to determine the index of clicked li
+     * @param e index of clicked li
      */
     goToIndex: function (e) {
         if (this.isAnimating) {
@@ -280,8 +292,7 @@ Carousel.prototype = {
         }
 
         var clickedIndex = this.getClickedListItemIndex(e);
-        this.oldIndex = this.currentIndex;
-        this.currentIndex = clickedIndex;
+        this.updateIndex(clickedIndex);
 
         if (clickedIndex > this.oldIndex) {
             console.log('You clicked right of the current index');
@@ -299,10 +310,10 @@ Carousel.prototype = {
         }
     },
 
-    /*
+    /**
      * Go to an item in a specific direction.
      *
-     * @param directioncan be either left or right
+     * @param direction 'left' || 'right'
      */
     goToItem: function (direction) {
         if (this.isAnimating) {
@@ -332,8 +343,11 @@ Carousel.prototype = {
         }
     },
 
-    /*
+    /**
+     * Check if the current index has a next or previous slide.
      *
+     * @param direction 'left' || 'right'
+     * @returns {boolean}
      */
     hasNoCarouselItem: function (direction) {
         switch (direction) {
@@ -355,8 +369,10 @@ Carousel.prototype = {
         }
     },
 
-    /*
+    /**
+     * Moves to the left or right.
      *
+     * @param direction 'left' || 'right'
      */
     move: function (direction) {
         switch (direction) {
@@ -380,49 +396,59 @@ Carousel.prototype = {
         }
     },
 
-    /*
-     * Update the status carousel indicators.
-     *
-     * States: is-active
+    /**
+     * Update the status of the carousel indicators.
+     * 'is-active' || ''
      */
     updateCarouselIndicators: function () {
         this.carouselIndicators.children[this.oldIndex].classList.remove('is-active');
         this.carouselIndicators.children[this.currentIndex].classList.add('is-active');
     },
 
-    /*
-     * Update the Index of the carousel.
+    /**
+     * Update the current index of the Carousel.
+     *
+     * @param value to be used to update the carousel index.
+     * 'decreaseByOne' || 'increaseByOne' || 'resetToBeginning' || 'resetToEnd' || 'number'
      */
     updateIndex: function (value) {
-        switch (value) {
-            case"decreaseByOne":
-                this.oldIndex = this.currentIndex;
-                this.currentIndex--;
-                console.info('New current index from the updateIndex function: ' + this.currentIndex);
-                break;
 
-            case "increaseByOne":
-                this.oldIndex = this.currentIndex;
-                this.currentIndex++;
-                console.info('New current index from the updateIndex function: ' + this.currentIndex);
-                break;
+        if (value === "decreaseByOne") {
+            this.oldIndex = this.currentIndex;
+            this.currentIndex--;
+            console.info('New current index from the updateIndex function: ' + this.currentIndex);
+        }
 
-            case "resetToBeginning":
-                this.oldIndex = this.currentIndex;
-                this.currentIndex = 0;
-                console.info('New current index from the updateIndex function: ' + this.currentIndex);
-                break;
+        else if (value === "increaseByOne") {
+            this.oldIndex = this.currentIndex;
+            this.currentIndex++;
+            console.info('New current index from the updateIndex function: ' + this.currentIndex);
+        }
 
-            case "resetToEnd":
-                this.oldIndex = this.currentIndex;
-                this.currentIndex = this.totalAmountOfCarouselItems - 1;
-                console.info('New current index from the updateIndex function: ' + this.currentIndex);
-                break;
+        else if (value === "resetToBeginning") {
+            this.oldIndex = this.currentIndex;
+            this.currentIndex = 0;
+            console.info('New current index from the updateIndex function: ' + this.currentIndex);
+        }
+
+        else if (value === "resetToEnd") {
+            this.oldIndex = this.currentIndex;
+            this.currentIndex = this.totalAmountOfCarouselItems - 1;
+            console.info('New current index from the updateIndex function: ' + this.currentIndex);
+        }
+
+        //Value is a number
+        else if (!isNaN(value)) {
+            this.oldIndex = this.currentIndex;
+            this.currentIndex = value;
+            console.info('WHOOOOT');
         }
     },
 
-    /*
+    /**
      * Adds th appropriate classes for the css animation.
+     *
+     * @param direction 'left' || 'right'
      */
     animate: function (direction) {
         switch (direction) {
@@ -438,7 +464,7 @@ Carousel.prototype = {
         }
     },
 
-    /*
+    /**
      * Removes the animation classes.
      */
     removeAnimationClasses: function () {
